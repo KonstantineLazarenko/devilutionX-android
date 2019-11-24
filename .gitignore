@@ -38,12 +38,7 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
-.idea/caches
+.idea/
 
 # Keystore files
 *.jks
@@ -72,8 +67,10 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
-app/.cxx/
 
-app/src/main/assets/CharisSILB.ttf
 /SDL2/
 /SDL2_ttf/
+
+# Android
+app/.cxx/
+app/src/main/assets/CharisSILB.ttf
