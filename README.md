@@ -1,3 +1,14 @@
-# SDL2 Android Example
+Build the project in Android Studio
 
-Read article at blog: https://georgik.rocks/tag/sdl2/
+```
+ git clone https://github.com/diasurgical/devilutionX.git
+ cd devilutionX/
+ git checkout android-wip
+ git clone https://github.com/diasurgical/devilutionX-android.git android-port
+ cd android-port
+ ./prepare.sh
+```
+
+Then move `diabdat.mpq` to `/sdcard/` on your device.
+
+Open devilutionX/android-port in Android Studio and click the play button.
