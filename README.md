@@ -4,8 +4,8 @@ Build the project in Android Studio
  git clone https://github.com/diasurgical/devilutionX.git
  cd devilutionX/
  git checkout android-wip
- git clone https://github.com/diasurgical/devilutionX-android.git android-port
- cd android-port
+ git clone https://github.com/diasurgical/devilutionX-android.git android-project
+ cd android-project
  ./prepare.sh
 ```
 
