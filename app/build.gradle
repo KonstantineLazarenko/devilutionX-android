@@ -54,7 +54,7 @@ apply plugin: 'kotlin-android-extensions'
             cmake {
                 path "../../CMakeLists.txt"
                 // path "../SDL2/CMakeLists.txt"
-                version "3.10.2"
+                version "3.18.1"
             }
         }
     }
