@@ -74,3 +74,6 @@ CTestTestfile.cmake
 _deps
 app/.cxx/
 
+app/src/main/assets/CharisSILB.ttf
+/SDL2/
+/SDL2_ttf/

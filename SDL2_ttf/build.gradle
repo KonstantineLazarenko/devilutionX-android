@@ -14,7 +14,6 @@ model {
             moduleName = 'SDL2_ttf'
             ldLibs.addAll(["GLESv1_CM", "EGL", "GLESv2", "log", "android", "dl"])
             CFlags.addAll(["-DGL_GLEXT_PROTOTYPES"])
-            CFlags.addAll(["-I" + file("include/").absolutePath,"-DGL_GLEXT_PROTOTYPES"])
         }
 
         sources {
@@ -29,7 +28,7 @@ model {
                         srcDir "../freetype/include"
                     }
                     source {
-                        srcDir "src"
+                        srcDir "./"
                         exclude "showfont.c"
                     }
                 }

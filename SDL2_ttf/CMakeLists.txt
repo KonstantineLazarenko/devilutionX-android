@@ -34,7 +34,7 @@ find_library(
 )
 
 include_directories(
-        include
+        ${CMAKE_CURRENT_SOURCE_DIR}/../SDL2/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../freetype/include
 )
 
@@ -48,8 +48,8 @@ add_library( # Sets the name of the library.
         # Sets the library as a shared library.
         SHARED
 
-        src/glfont.c
-        src/SDL_ttf.c
+        glfont.c
+        SDL_ttf.c
         )
 
 
