@@ -1,64 +1,87 @@
-# For more information about using CMake with Android Studio, read the
-# documentation: https://d.android.com/studio/projects/add-native-code.html
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
+  message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the SDL_ttf source code and call cmake from there")
+endif()
 
-# Sets the minimum version of CMake required to build the native library.
+##### general #####
+cmake_minimum_required(VERSION 3.0)
+project(SDL_ttf C)
 
-cmake_minimum_required(VERSION 3.4.1)
-project(SDL2_ttf)
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
-# Creates and names a library, sets it as either STATIC
-# or SHARED, and provides the relative paths to its source code.
-# You can define multiple libraries, and CMake builds them for you.
-# Gradle automatically packages shared libraries with your APK.
+find_package(SDL2 REQUIRED)
+find_package(Freetype REQUIRED)
+find_package(PkgConfig QUIET)
 
-find_library( # Sets the name of the path variable.
-        GLESv1_CM
+set(SDL_TTF_MAJOR_VERSION 2)
+set(SDL_TTF_MINOR_VERSION 0)
+set(SDL_TTF_MICRO_VERSION 8)
+set(SDL_TTF_INTERFACE_AGE 0)
+set(SDL_TTF_BINARY_AGE 14)
+set(SDL_TTF_VERSION "${SDL_TTF_MAJOR_VERSION}.${SDL_TTF_MINOR_VERSION}.${SDL_TTF_MICRO_VERSION}")
 
-        # Specifies the name of the NDK library that
-        # you want CMake to locate.
-        GLESv1_CM )
+##### library generation #####
+add_library(SDL2_ttf SDL_ttf.c SDL_ttf.h)
+target_link_libraries(SDL2_ttf SDL2::SDL2 Freetype::Freetype)
+target_include_directories(SDL2_ttf PUBLIC $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/SDL2>)
 
-find_library(
-        GLESv2
-        GLESv2
+install(
+  TARGETS SDL2_ttf
+  EXPORT SDL2_ttfTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+install(
+  FILES SDL_ttf.h
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/SDL2
 )
 
-find_library(
-        android
-        android
+##### export files #####
+if (APPLE)
+  set(PKG_PREFIX "SDL2_ttf.framework/Resources")
+elseif (WIN32)
+  set(PKG_PREFIX "cmake")
+else ()
+  set(PKG_PREFIX "lib/cmake/SDL2")
+endif ()
+
+write_basic_package_version_file("${CMAKE_BINARY_DIR}/SDL2_ttfConfigVersion.cmake"
+  VERSION ${SDL_TTF_VERSION}
+  COMPATIBILITY AnyNewerVersion
 )
 
-find_library(
-        log
-        log
+install(
+  EXPORT SDL2_ttfTargets
+  FILE SDL2_ttfTargets.cmake
+  NAMESPACE SDL2_ttf::
+  DESTINATION ${PKG_PREFIX}
+)
+install(
+  FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/SDL2_ttfConfig.cmake
+    ${CMAKE_BINARY_DIR}/SDL2_ttfConfigVersion.cmake
+  DESTINATION ${PKG_PREFIX}
+  COMPONENT Devel
 )
 
-include_directories(
-        ${CMAKE_CURRENT_SOURCE_DIR}/../SDL2/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/../freetype/include
-)
+##### pkg-config #####
+if (PKG_CONFIG_FOUND)
+  set(SDL_VERSION 2.0.0)
+  set(prefix ${CMAKE_INSTALL_PREFIX})
+  set(exec_prefix "\${prefix}")
+  set(libdir "\${exec_prefix}/lib${LIB_SUFFIX}")
+  set(bindir "\${exec_prefix}/bin")
+  set(includedir "\${prefix}/include")
 
-add_definitions(-DGL_GLEXT_PROTOTYPES)
+  configure_file("${SDL_ttf_SOURCE_DIR}/SDL2_ttf.pc.in"
+    "${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc" @ONLY)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../freetype/ ${CMAKE_CURRENT_SOURCE_DIR}/../freetype/)
-
-add_library( # Sets the name of the library.
-        SDL2_ttf
-
-        # Sets the library as a shared library.
-        SHARED
-
-        glfont.c
-        SDL_ttf.c
-        )
-
-
-target_link_libraries(
-        SDL2_ttf
-        freetype
-        SDL2
-        GLESv1_CM
-        GLESv2
-        android
-        log
-)
+  if (CMAKE_SYSTEM_NAME MATCHES FreeBSD)
+    # FreeBSD uses ${PREFIX}/libdata/pkgconfig
+    install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc DESTINATION "libdata/pkgconfig")
+  else ()
+    install(FILES ${SDL_ttf_BINARY_DIR}/SDL2_ttf.pc
+      DESTINATION "lib${LIB_SUFFIX}/pkgconfig")
+  endif ()
+endif ()
